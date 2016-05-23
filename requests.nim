@@ -11,7 +11,7 @@ proc arr_to_query(arr: dict): string =
   return query
 
 # define requests' methods
-method get(
+method get*(
     self: Requests,
     url: string,
     data: dict = {"":""}
@@ -23,7 +23,7 @@ method get(
     var full_url = url & "?" & arr_to_query(data)
     return full_url.getContent()
 
-method post(
+method post*(
     self: Requests,
     url: string,
     data: dict = {"":""}
@@ -34,9 +34,6 @@ method post(
   else:
     return url.postContent(body=arr_to_query(data))
 
-var requests: Requests
-
-var a = {"url": "http://google.com/"}
-echo(
-  requests.post("http://httpbin.org/post", data=a)
-)
+# Pass a requests instance to the importer
+# NOTE: I would like this to be named 'Requests', but nim won't allow :\
+var request*:Requests
