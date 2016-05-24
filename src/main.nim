@@ -28,8 +28,8 @@ glfw.makeContextCurrent(window)
 # discard gladLoadGL(getProcAddress)
 loadExtensions()
 
-glEnable(GL_DEPTH_TEST)
-glDepthFunc(GL_LEQUAL)
+# glEnable(GL_DEPTH_TEST)
+# glDepthFunc(GL_LEQUAL)
 
 glEnable(GL_BLEND)
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -58,16 +58,6 @@ glClearDepth((GLfloat)1.0)
 converter toGLfloat(a: float): GLfloat =
   return (GLfloat)a
 
-# do some shit setup
-var
-  Model: Mat4x4[GLfloat] = mat4x4(2.0)
-  View: Mat4x4[GLfloat] = rot_cam.getViewMatrix()
-  Projection: Mat4x4[GLfloat] = rot_cam.getProjectionMatrix()
-  MVP: Mat4x4[GLfloat]
-  Valid_Model: Mat4x4[GLfloat]
-  Valid_View: Mat4x4[GLfloat]
-  Valid_Projection: Mat4x4[GLfloat]
-  Valid_MVP: Mat4x4[GLfloat]
 
 var
   errorCode: int
@@ -81,16 +71,23 @@ loadObj(m, "res/obj/cube.obj")
 m.init()
 m.upload()
 
+var
+  M, V, P, MVP: Mat4x4[GLfloat]
+
+M = mat4x4(0.1)
+V = lookAt(
+  vec3(5.0, 5.0, 5.0),
+  vec3(0.0, 0.0, 0.0),
+  vec3(0.0, 1.0, 1.0)
+)
+P = perspective(90.0, 4.0/3.0, -500.0, 500.0)
+# P = ortho(-1, 1, -1, 1, -500, 500)
+MVP = P * V * M
+
 while not window.shouldClose:
   errorCode = 0
-  MVP = Projection * View * Model
 
-  # Valid_Model = Model
-  # Valid_View = View
-  Valid_MVP = MVP
-  Valid_lightPos = lightPos
-
-  # m.upload()
+  m.upload()
 
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
@@ -99,32 +96,34 @@ while not window.shouldClose:
     mvpId,
     (GLsizei)1,
     false,
-    Valid_MVP.caddr
+    MVP.caddr
   )
 
   m.draw()
 
 
   window.update()
-  # window.swapBufs()
+  window.swapBufs()
 
   if window.isKeyDown(keyLeft):
-    Model = Model.rotate(
+    M = M.rotate(
       vec3(cast[GLfloat](0.0), -1.0, 0.0),
       0.1f
     )
   if window.isKeyDown(keyRight):
-    Model = Model.rotate(
+    M = M.rotate(
       vec3(cast[GLfloat](0.0), 1.0, 0.0),
       0.1f
     )
   if window.isKeyDown(keyUp):
-    Model = Model.rotate(
+    M = M.rotate(
       vec3(cast[GLfloat](-1.0), 0.0, 0.0),
       0.1f
     )
   if window.isKeyDown(keyDown):
-    Model = Model.rotate(
+    M = M.rotate(
       vec3(cast[GLfloat](1.0), 0.0, 0.0),
       0.1f
     )
+  if window.isKeyDown(keyEscape):
+    window.shouldClose = true
