@@ -116,6 +116,15 @@ proc draw*(m: var model) =
 converter toGLfloat(a: float): GLfloat =
   return GLfloat(a)
 
+proc `$` (arr: array[0..0,  cint]): string =
+  result = "["
+  var length = arr.len
+  for x in 0..length:
+    if x == (length - 1):
+      result &= arr[x].intToStr
+    else:
+      result &= arr[x].intToStr & ", "
+  result &= "]"
 
 proc loadObj*(m: var model, filepath: string) =
   let
@@ -136,9 +145,8 @@ proc loadObj*(m: var model, filepath: string) =
   proc addIndice(m: var model, vi_0, vi_1, vi_2, ti_0, ti_1, ti_2, ni0, ni1, ni2: int)=
     m.indicesData = m.indicesData & @[
       (cint)vi_0, (cint)vi_1, (cint)vi_2,
-      (cint)ti_0, (cint)ti_1, (cint)ti_2,
-      (cint)ni0, (cint)ni1, (cint)ni2
     ]
+
 
   try:
     loadMeshData(loader, fs,
@@ -152,3 +160,8 @@ proc loadObj*(m: var model, filepath: string) =
       # e = getCurrentException()
       msg = getCurrentExceptionMsg()
     quit msg
+
+  echo m.data
+  echo m.textureData
+  echo m.indicesData
+  # echo m.textureData
