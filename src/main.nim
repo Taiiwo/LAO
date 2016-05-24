@@ -29,11 +29,14 @@ glfw.makeContextCurrent(window)
 loadExtensions()
 
 glEnable(GL_DEPTH_TEST)
-glEnable(GL_LINE_SMOOTH)
+glDepthFunc(GL_LEQUAL)
 
-window.stickyKeys = false
+glEnable(GL_BLEND)
+glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 glClearColor(0.0f, 0.0f, 0.4f, 1)
+
+window.stickyKeys = false
 
 let
   shaderId: GLuint = loadShaderSet("res/shaders/base.vs", "res/shaders/base.fs")
@@ -72,7 +75,7 @@ var
   Valid_lightPos: Vec3[GLfloat]
 
 
-var m: model
+var m: mesh
 
 loadObj(m, "res/obj/cube.obj")
 m.init()
