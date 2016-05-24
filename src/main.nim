@@ -82,7 +82,6 @@ m.init()
 m.upload()
 
 while not window.shouldClose:
-  echo "rendering"
   errorCode = 0
   MVP = Projection * View * Model
 
@@ -129,4 +128,3 @@ while not window.shouldClose:
       vec3(cast[GLfloat](1.0), 0.0, 0.0),
       0.1f
     )
-  sleep(1000)
