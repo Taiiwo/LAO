@@ -4,13 +4,15 @@ import streams
 import strutils
 
 type model* = object
-  buffer*: GLuint
   data*: seq[GLfloat]
+  textureData*: seq[GLfloat]
+  normalData*: seq[GLfloat]
+  indicesData: seq[uint]
+
+  buffer*: GLuint
   textureBuffer*: GLuint
   indicesBuffer*: GLuint
   vaoBuffer*: GLuint
-  textureData*: seq[GLfloat]
-  indicesData: seq[cint]
 
 proc init*(m: var model) =
   echo "Model initiated"
@@ -38,24 +40,24 @@ proc init*(m: var model) =
     a
   )
 
-  glGenBuffers(1, addr m.indicesBuffer)
-  glVertexAttribPointer(
-    1,
-    3,
-    cGL_FLOAT,
-    false,
-    0,
-    nil
-  )
-
   glGenBuffers(1, addr m.textureBuffer)
   glVertexAttribPointer(
-    2,
+    1,
     2,
     cGL_FLOAT,
     false,
     sizeof(GLfloat) * 3,
     a
+  )
+
+  glGenBuffers(1, addr m.indicesBuffer)
+  glVertexAttribPointer(
+    2,
+    3,
+    cGL_FLOAT,
+    false,
+    sizeof(GLuint) * 3,
+    nil
   )
 
   glBindVertexArray(0)
@@ -113,17 +115,17 @@ proc draw*(m: var model) =
   glDisableVertexAttribArray(1)
   glDisableVertexAttribArray(0)
 
-converter toGLfloat(a: float): GLfloat =
-  return GLfloat(a)
+# converter toGLfloat(a: float): GLfloat =
+#   return GLfloat(a)
 
-proc `$` (arr: array[0..0,  cint]): string =
+proc `$` (arr: array[0..0,  uint]): string =
   result = "["
   var length = arr.len
   for x in 0..length:
     if x == (length - 1):
-      result &= arr[x].intToStr
+      result &= cast[int](arr[x]).intToStr
     else:
-      result &= arr[x].intToStr & ", "
+      result &= cast[int](arr[x]).intToStr & ", "
   result &= "]"
 
 proc loadObj*(m: var model, filepath: string) =
@@ -143,9 +145,8 @@ proc loadObj*(m: var model, filepath: string) =
     return
 
   proc addIndice(m: var model, vi_0, vi_1, vi_2, ti_0, ti_1, ti_2, ni0, ni1, ni2: int)=
-    m.indicesData = m.indicesData & @[
-      (cint)vi_0, (cint)vi_1, (cint)vi_2,
-    ]
+    m.indicesData = m.indicesData & @[(uint)vi_0, (uint)vi_1, (uint)vi_2]
+    m.textureData = m.textureData & @[(GLfloat)ti_0, (GLfloat)ti_1, (GLfloat)ti_2]
 
 
   try:
@@ -164,4 +165,3 @@ proc loadObj*(m: var model, filepath: string) =
   echo m.data
   echo m.textureData
   echo m.indicesData
-  # echo m.textureData

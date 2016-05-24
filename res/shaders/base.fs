@@ -8,5 +8,5 @@ void main()
 {
 //    color = fragmentColor;
 //    color = texture(diffuse, UV).rgba;
-//    color = vec3(1,1,1);
+    color = vec3(1,1,1);
 }
