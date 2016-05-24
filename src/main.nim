@@ -16,6 +16,7 @@ import strutils
 
 import tables
 
+import os
 
 glfw.init()
 
@@ -69,24 +70,6 @@ var
   errorCode: int
   lightPos: Vec3[float] = vec3(5.0, 5.0, 5.0)
   Valid_lightPos: Vec3[GLfloat]
-# echo type lightPos
-
-# lightpos =
-
-# converter toGLuint(a: int): GLuint =
-#   return cast[GLuint](a)
-#
-# converter toGLint(a: int): GLint =
-#   return cast[GLint](a)
-#
-# converter toGLenum(a: int): GLenum =
-#   return cast[GLenum](a)
-#
-# converter toGLboolean(a: bool): GLboolean =
-#   return cast[GLboolean](a)
-#
-# converter toGLsizei(a: bool): GLsizei =
-#   return cast[GLsizei](a)
 
 
 var m: model
@@ -99,24 +82,30 @@ while not window.shouldClose:
   echo "rendering"
   errorCode = 0
   MVP = Projection * View * Model
-  # MVP = rot_cam.getViewProjectionMatrix() * Model
-  Valid_Model = Model
-  Valid_View = View
-  # Valid_Projection = Projection
+
+  # Valid_Model = Model
+  # Valid_View = View
   Valid_MVP = MVP
   Valid_lightPos = lightPos
 
-  m.upload()
+  # m.upload()
 
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
   glUseProgram(shaderId)
-  glUniformMatrix4fv(mvpId, (GLsizei)1, (GLboolean)GL_FALSE, Valid_MVP.caddr)
+  glUniformMatrix4fv(
+    mvpId,
+    (GLsizei)1,
+    false,
+    Valid_MVP.caddr
+  )
 
   m.draw()
 
 
   window.update()
+  # window.swapBufs()
+
   if window.isKeyDown(keyLeft):
     Model = Model.rotate(
       vec3(cast[GLfloat](0.0), -1.0, 0.0),
@@ -137,3 +126,4 @@ while not window.shouldClose:
       vec3(cast[GLfloat](1.0), 0.0, 0.0),
       0.1f
     )
+  sleep(1000)
