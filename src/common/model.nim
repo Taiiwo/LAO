@@ -7,7 +7,7 @@ type mesh* = object
   data*: seq[GLfloat]
   textureData*: seq[GLfloat]
   normalsData*: seq[GLfloat]
-  indicesData: seq[uint]
+  indicesData: seq[cint]
 
   buffer*: GLuint
   textureBuffer*: GLuint
@@ -140,7 +140,7 @@ proc loadObj*(m: var mesh, filepath: string) =
     return
 
   proc addIndice(m: var mesh, vi_0, vi_1, vi_2, ti_0, ti_1, ti_2, ni0, ni1, ni2: int)=
-    m.indicesData = m.indicesData & @[(uint)vi_0, (uint)vi_1, (uint)vi_2]
+    m.indicesData = m.indicesData & @[(cint)vi_0, (cint)vi_1, (cint)vi_2]
     m.textureData = m.textureData & @[(GLfloat)ti_0, (GLfloat)ti_1, (GLfloat)ti_2]
 
 
@@ -156,8 +156,3 @@ proc loadObj*(m: var mesh, filepath: string) =
       # e = getCurrentException()
       msg = getCurrentExceptionMsg()
     quit msg
-
-  echo m.data, m.data.len
-  echo m.textureData, m.textureData.len
-  echo m.indicesData, m.indicesData.len
-  # echo sizeof(GLfloat)*3
