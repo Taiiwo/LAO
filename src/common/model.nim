@@ -13,56 +13,56 @@ type mesh* = object
   textureBuffer*: GLuint
   normalsBuffer*: GLuint
   indicesBuffer*: GLuint
+
   vaoBuffer*: GLuint
 
 proc init*(m: var mesh) =
   echo "mesh initiated"
   # create and bind the vertex array
-  glGenVertexArrays(1, addr m.vaoBuffer)
-  glBindVertexArray(m.vaoBuffer)
+  glGenVertexArrays(1, addr m.vaoBuffer) #
+  glBindVertexArray(m.vaoBuffer) #
 
 
   # vertex
-  glGenBuffers(1, addr m.buffer)
-  glBindBuffer(GL_ARRAY_BUFFER, m.buffer)
+  glGenBuffers(1, addr m.buffer) #
+  glBindBuffer(GL_ARRAY_BUFFER, m.buffer) #
   glBufferData(
     GL_ARRAY_BUFFER,
-    GLsizeiptr(m.data.len*sizeof(GLfloat)),
+    GLsizeiptr(m.data.len * sizeof(GLfloat)),
     addr m.data[0],
     GL_STATIC_DRAW
-  )
+  ) #
 
   # sort out some attributes
-  var a: pointer
+  var a: pointer #
   glVertexAttribPointer(
     0,
     3,
     cGL_FLOAT,
     false,
-    # sizeof(GLfloat) * 3,
-    0,
+    sizeof(GLfloat) * 3,
     a
-  )
+  ) #
 
   # UV
-  glGenBuffers(1, addr m.textureBuffer)
-  glBindBuffer(GL_ARRAY_BUFFER, m.textureBuffer)
+  glGenBuffers(1, addr m.textureBuffer)#
+  glBindBuffer(GL_ARRAY_BUFFER, m.textureBuffer) #
   glBufferData(
     GL_ARRAY_BUFFER,
-    GLsizeiptr(36),
+    GLsizeiptr(m.textureData.len * sizeof(GLfloat)),
     addr m.textureData[0],
     GL_STATIC_DRAW
   )
 
-  if m.indicesData != nil:
-    glGenBuffers(1, addr m.indicesBuffer)
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.indicesBuffer)
+  if m.indicesData != nil: #
+    glGenBuffers(1, addr m.indicesBuffer) #
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.indicesBuffer) #
     glBufferData(
       GL_ELEMENT_ARRAY_BUFFER,
-      GLsizeiptr(36),
+      GLsizeiptr(m.indicesData.len * sizeof(GLuint)),
       addr m.indicesData[0],
       GL_STATIC_DRAW
-    )
+    )#
 
   glVertexAttribPointer(
     1,
@@ -70,7 +70,7 @@ proc init*(m: var mesh) =
     cGL_FLOAT,
     false,
     0,
-    a
+    nil
   )
 
   glBindVertexArray(0)
@@ -80,7 +80,7 @@ proc upload*(m: var mesh) =
   glBindBuffer(GL_ARRAY_BUFFER, m.buffer)
   glBufferData(
     GL_ARRAY_BUFFER,
-    GLsizeiptr(m.data.len),
+    GLsizeiptr(m.data.len * sizeof(GLfloat)),
     addr m.data[0],
     GL_DYNAMIC_DRAW
   )
@@ -98,7 +98,7 @@ proc draw*(m: var mesh) =
 
   var p: pointer
 
-  if m.indicesData.len != 0:
+  if m.indicesData != nil:
     glDrawElements(
       GL_TRIANGLES,
       GLsizei(m.indicesData.len),
@@ -126,7 +126,7 @@ proc `$` (arr: array[0..0,  uint]): string =
 proc loadObj*(m: var mesh, filepath: string) =
   let
     loader: ObjLoader = new(ObjLoader)
-    f = open("res/obj/cube.obj")
+    f = open(filepath)
     fs = newFileStream(f)
 
   # m.init()
