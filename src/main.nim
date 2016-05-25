@@ -67,7 +67,7 @@ var
 
 var m: mesh
 
-loadObj(m, "res/obj/plane.obj")
+loadObj(m, "res/obj/suzanne.obj")
 m.init()
 # m.upload()
 
@@ -75,7 +75,7 @@ var
   M, V, MVP: Mat4x4[GLfloat]
   P: Mat4x4[float64]
 
-M = mat4x4((GLfloat)1.0).scale(vec3(GLfloat(0.3), 0.3, 0.3))
+M = mat4x4((GLfloat)1.0)#.scale(vec3(GLfloat(0.3), 0.3, 0.3))
 V = lookAt(
   vec3((GLfloat)5.0, 5.0, 5.0),
   vec3((GLfloat)0.0, 0.0, 0.0),
@@ -84,35 +84,12 @@ V = lookAt(
 P = perspective(
   GLfloat(90.0),
   GLfloat(4.0/3.0),
-  GLfloat(500),
-  GLfloat(-10)
+  GLfloat(-10.0),
+  GLfloat(0.0)
 )
-# P = ortho(
-#   -10.0,
-#   10.0,
-#   -10.0,
-#   10.0,
-#   -10.0,
-#   10.0
-# )
-
-V = mat4x4(GLfloat(0.1))
-P = mat4x4(GLfloat(0.1))
 
 var glP: Mat4x4[GLfloat] = P
 MVP = glP * V * M
-
-
-echo "M: ", M
-
-echo "V: ", V
-
-echo "P: ", P
-
-echo "glP: ", glP
-
-echo "MVP: ", MVP
-
 
 
 while not window.shouldClose:
@@ -146,23 +123,32 @@ while not window.shouldClose:
 
   if window.isKeyDown(keyLeft):
     M = M.rotate(
-      vec3(cast[GLfloat](0.0), -1.0, 0.0),
+      vec3(GLfloat(0.0), -1.0, 0.0),
       0.1f
     )
   if window.isKeyDown(keyRight):
     M = M.rotate(
-      vec3(cast[GLfloat](0.0), 1.0, 0.0),
+      vec3(GLfloat(0.0), 1.0, 0.0),
       0.1f
     )
   if window.isKeyDown(keyUp):
     M = M.rotate(
-      vec3(cast[GLfloat](-1.0), 0.0, 0.0),
+      vec3(GLfloat(-1.0), 0.0, 0.0),
       0.1f
     )
   if window.isKeyDown(keyDown):
     M = M.rotate(
-      vec3(cast[GLfloat](1.0), 0.0, 0.0),
+      vec3(GLfloat(1.0), 0.0, 0.0),
       0.1f
     )
+  if window.isKeyDown(keyEqual):
+    M = M.scale(
+      vec3(GLfloat(1.1))
+    )
+  if window.isKeyDown(keyMinus):
+    M = M.scale(
+      vec3(GLfloat(1/1.1))
+    )
+
   if window.isKeyDown(keyEscape):
     window.shouldClose = true
