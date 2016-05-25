@@ -67,7 +67,7 @@ var
 
 var m: mesh
 
-loadObj(m, "res/obj/test.obj")
+loadObj(m, "res/obj/plane.obj")
 m.init()
 # m.upload()
 
@@ -139,10 +139,10 @@ while not window.shouldClose:
   window.update()
   window.swapBufs()
 
-  M = M.rotate(
-    vec3(cast[GLfloat](0.0), -1.0, 0.0),
-    0.1f
-  )
+  # M = M.rotate(
+  #   vec3(cast[GLfloat](0.0), -1.0, 0.0),
+  #   0.1f
+  # )
 
   if window.isKeyDown(keyLeft):
     M = M.rotate(

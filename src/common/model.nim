@@ -19,22 +19,22 @@ type mesh* = object
 proc init*(m: var mesh) =
   echo "mesh initiated"
   # create and bind the vertex array
-  glGenVertexArrays(1, addr m.vaoBuffer) #
-  glBindVertexArray(m.vaoBuffer) #
+  glGenVertexArrays(1, addr m.vaoBuffer)
+  glBindVertexArray(m.vaoBuffer)
 
 
   # vertex
-  glGenBuffers(1, addr m.buffer) #
-  glBindBuffer(GL_ARRAY_BUFFER, m.buffer) #
+  glGenBuffers(1, addr m.buffer)
+  glBindBuffer(GL_ARRAY_BUFFER, m.buffer)
   glBufferData(
     GL_ARRAY_BUFFER,
     GLsizeiptr(m.data.len * sizeof(GLfloat)),
     addr m.data[0],
     GL_STATIC_DRAW
-  ) #
+  )
 
   # sort out some attributes
-  var a: pointer #
+  var a: pointer
   glVertexAttribPointer(
     0,
     3,
@@ -42,11 +42,11 @@ proc init*(m: var mesh) =
     false,
     sizeof(GLfloat) * 3,
     a
-  ) #
+  )
 
   # UV
-  glGenBuffers(1, addr m.textureBuffer)#
-  glBindBuffer(GL_ARRAY_BUFFER, m.textureBuffer) #
+  glGenBuffers(1, addr m.textureBuffer)
+  glBindBuffer(GL_ARRAY_BUFFER, m.textureBuffer)
   glBufferData(
     GL_ARRAY_BUFFER,
     GLsizeiptr(m.textureData.len * sizeof(GLfloat)),
@@ -54,15 +54,15 @@ proc init*(m: var mesh) =
     GL_STATIC_DRAW
   )
 
-  if m.indicesData != nil: #
-    glGenBuffers(1, addr m.indicesBuffer) #
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.indicesBuffer) #
+  if m.indicesData != nil:
+    glGenBuffers(1, addr m.indicesBuffer)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.indicesBuffer)
     glBufferData(
       GL_ELEMENT_ARRAY_BUFFER,
       GLsizeiptr(m.indicesData.len * sizeof(GLuint)),
       addr m.indicesData[0],
       GL_STATIC_DRAW
-    )#
+    )
 
   glVertexAttribPointer(
     1,
@@ -129,9 +129,12 @@ proc loadObj*(m: var mesh, filepath: string) =
     f = open(filepath)
     fs = newFileStream(f)
 
+  # hacky fix for weird bug:
+  m.data = @[GLfloat(0.0), 0.0, 0.0]
+
   # m.init()
   proc addVertex(m: var mesh, x, y, z: float) =
-    m.data = m.data & @[(GLfloat)x, (GLfloat)y, (GLfloat)z]
+    m.data = m.data & @[GLfloat(x), GLfloat(y), GLfloat(z)]
 
   proc addTextureVertex(m: var mesh, x, y, z: float) =
     m.textureData = m.textureData & @[(GLfloat)x, (GLfloat)y, (GLfloat)z]
@@ -158,5 +161,6 @@ proc loadObj*(m: var mesh, filepath: string) =
     quit msg
 
   echo m.data
+  echo m.data.len
   echo m.textureData
   echo m.indicesData
