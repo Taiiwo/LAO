@@ -156,3 +156,7 @@ proc loadObj*(m: var mesh, filepath: string) =
       # e = getCurrentException()
       msg = getCurrentExceptionMsg()
     quit msg
+
+  echo m.data
+  echo m.textureData
+  echo m.indicesData

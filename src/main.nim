@@ -28,8 +28,8 @@ glfw.makeContextCurrent(window)
 # discard gladLoadGL(getProcAddress)
 loadExtensions()
 
-# glEnable(GL_DEPTH_TEST)
-# glDepthFunc(GL_LEQUAL)
+glEnable(GL_DEPTH_TEST)
+glDepthFunc(GL_LEQUAL)
 
 glEnable(GL_BLEND)
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -67,25 +67,60 @@ var
 
 var m: mesh
 
-loadObj(m, "res/obj/cube.obj")
+loadObj(m, "res/obj/test.obj")
 m.init()
-m.upload()
+# m.upload()
 
 var
-  M, V, P, MVP: Mat4x4[GLfloat]
+  M, V, MVP: Mat4x4[GLfloat]
+  P: Mat4x4[float64]
 
-M = mat4x4(0.1)
+M = mat4x4((GLfloat)1.0).scale(vec3(GLfloat(0.3), 0.3, 0.3))
 V = lookAt(
-  vec3(5.0, 5.0, 5.0),
-  vec3(0.0, 0.0, 0.0),
-  vec3(0.0, 1.0, 1.0)
+  vec3((GLfloat)5.0, 5.0, 5.0),
+  vec3((GLfloat)0.0, 0.0, 0.0),
+  vec3((GLfloat)0.0, 1.0, 0.0)
 )
-P = perspective(90.0, 4.0/3.0, -500.0, 500.0)
-# P = ortho(-1, 1, -1, 1, -500, 500)
-MVP = P * V * M
+P = perspective(
+  GLfloat(90.0),
+  GLfloat(4.0/3.0),
+  GLfloat(500),
+  GLfloat(-10)
+)
+# P = ortho(
+#   -10.0,
+#   10.0,
+#   -10.0,
+#   10.0,
+#   -10.0,
+#   10.0
+# )
+
+V = mat4x4(GLfloat(0.1))
+P = mat4x4(GLfloat(0.1))
+
+var glP: Mat4x4[GLfloat] = P
+MVP = glP * V * M
+
+
+echo "M: ", M
+
+echo "V: ", V
+
+echo "P: ", P
+
+echo "glP: ", glP
+
+echo "MVP: ", MVP
+
+
 
 while not window.shouldClose:
   errorCode = 0
+
+  MVP = glP * V * M
+
+  # echo "MVP: ", MVP
 
   m.upload()
 
@@ -101,9 +136,13 @@ while not window.shouldClose:
 
   m.draw()
 
-
   window.update()
   window.swapBufs()
+
+  M = M.rotate(
+    vec3(cast[GLfloat](0.0), -1.0, 0.0),
+    0.1f
+  )
 
   if window.isKeyDown(keyLeft):
     M = M.rotate(
