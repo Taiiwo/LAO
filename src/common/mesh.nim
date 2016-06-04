@@ -1,6 +1,6 @@
 import opengl
 import glm
-import nimasset/obj
+# import nimasset/obj
 import streams
 import strutils
 # import logging
