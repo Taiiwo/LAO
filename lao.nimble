@@ -16,8 +16,10 @@ bin = @[
   "src/main"
 ]
 
-# before run:
-#   nimble.build()
-#
-# task run, "Run LAO":
-#   echo "running"
+before run:
+  echo "Building LAO.."
+  exec "nimble build"
+
+task run, "Run LAO":
+  echo "Running LAO!"
+  exec "src/main"
