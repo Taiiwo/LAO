@@ -1,4 +1,4 @@
-from math import pi, sin, cos
+from math import pi, sin, cos, radians, degrees
 
 from panda3d.core import GeomVertexFormat, GeomVertexData
 from panda3d.core import Geom, GeomTriangles, GeomVertexWriter, GeomNode
@@ -9,18 +9,42 @@ def planet():
     vdata = GeomVertexData("vertices", format, Geom.UHDynamic)
 
     vertexWriter = GeomVertexWriter(vdata, "vertex")
-    vertexWriter.addData3f(0,1,0)   # center of circle
+    vertexWriter.addData3f(0,10,0)   # center of circle
 
     #step 2) make primitives and assign vertices to them
     tris = GeomTriangles(Geom.UHDynamic)
     i3 = 0
-    points = 20
-    for i, x, y in circle(points, 10):
-        for i2, x2, y2 in circle(points, y):
+    points = 50
+    # for each point in a circle
+    for i, x, y in circle(points * 2, 10):
+        # for each point in another circle where the radius is the x coord of
+        # the point in the parent loop
+        for i2, x2, y2 in circle(points * 2, x):
+            # stop after doing a semicircle
+            if i2 > points:
+                break
+            # Used to keep track of the current vertex. Start at one because we
+            # already made our initial vertex at the center of the first face
             i3 += 1
-            vertexWriter.addData3f(x,y2,x2)
-            tris.addVertices(0 if i==0 else i3-points, i3-1, i3)
-            tris.addVertices(i3-1, 0 if i==0 else i3 - points+1, i3)
+            # draw a vertex at this location
+            # x is the same for each of these, and we use the x y coords from
+            # the circle as y z coords.
+            vertexWriter.addData3f(y2, x2, y)
+            if i == 0:
+                if i2 == 0:
+                    # skip the first point
+                    continue
+                # on the first circle, link everything to 0
+                tris.addVertices(0, i3-1, i3)
+            else:
+                # for each point we draw two triangles.
+                # the first triangle connects the current point, the previous point
+                # and a point from the previous layer inline with the current point
+                tris.addVertices(i3-points-1, i3-1, i3)
+                # the second triangle goes from the previous point to the point
+                # inline with the current point on the previous layer, and the point
+                # before that
+                tris.addVertices(i3, i3-points-1, i3-points)
 
     #step 3) make a Geom object to hold the primitives
     squareGeom = Geom(vdata)
@@ -32,10 +56,15 @@ def planet():
     return squareGN
 
 def circle(points, scale):
-    angle = (360 / points) * (pi / 180.0)
+    separation = 2*pi/points
     i = 0
-    while angle * i < 360 * (pi / 180):
-        x = sin(angle * i) * scale
-        y = cos(angle * i) * scale
+    angle = separation * i
+    while angle < 2*pi:
+        x = sin(angle) * scale
+        y = cos(angle) * scale
         yield (i, x, y)
         i += 1
+        angle = separation * i
+    x = sin(angle) * scale
+    y = cos(angle) * scale
+    yield (i, x, y)
