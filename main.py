@@ -42,7 +42,7 @@ class LAO(ShowBase):
         render.setLight(self.slnp)
 
         # sets the fly camera
-        fly_camera.FlyCamera(self, 0.1, 2)
+        fly_camera.FlyCamera(self, 1, 2)
 
 app = LAO()
 app.run()
