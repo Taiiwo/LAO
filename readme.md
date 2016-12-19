@@ -76,6 +76,9 @@ Properties that provide in-game functionality to your machine.
   - used to harvest minerals from ground below.
   - consumes energy.
   - different locations provide different resources and quantities.
+- science lab
+  - when turned on, will consume resources from a nearby inventory
+  - each consumed resource grants exp
 
 ### Physical
 Provides components with in-game effects.
