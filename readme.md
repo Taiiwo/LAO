@@ -19,13 +19,20 @@ materials and to keep you alive and safe.
 Building machines
 -----------------
 Building machines can be done from the (yet to be named) wrist interface. Create
-your base shapes for your machines, and assign properties to each section to
-make that section a component. The size of the component will determine things
-like its power usage and effectiveness. You are given all properties by default,
-but they will probably need to be upgraded to fit the requirements of your more
-ambitious ideas. For example, an un-upgraded thruster will require a lot of
-energy, to provide very little thrust. Upgrades can then be applied to improve
-the efficiency of the thruster. Below is a list of all planned properties:
+and save custom shapes called `sections`, then stick multiple sections together
+to create a skeleton for your machine. Assign properties to each section to
+make that section into a `component`. You can also decide the resource you want
+to use to print each component/section. The size of the component, and the
+resource it is made from will determine things like its power usage,
+effectiveness, weight, and resistance to damage.
+
+Component properties
+------------------
+You are given all properties by default, but they will probably need to be
+upgraded to fit the requirements of your more ambitious ideas. For example, an
+un-upgraded thruster will require a lot of energy and provide very little
+thrust. Upgrades can then be applied to improve the efficiency of the thruster.
+Below is a list of all planned properties:
 
 ### Movement
 Adding these properties to a section will provide the machine with movement.
