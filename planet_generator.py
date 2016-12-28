@@ -1,9 +1,9 @@
+from random import uniform
 from math import pi, sin, cos, radians, degrees
-
 from panda3d.core import GeomVertexFormat, GeomVertexData
 from panda3d.core import Geom, GeomTriangles, GeomVertexWriter, GeomNode
 
-def planet():
+def planet(size, base_seed):
     #step 1) create GeomVertexData and add vertex information
     format = GeomVertexFormat.getV3()
     vdata = GeomVertexData("vertices", format, Geom.UHDynamic)
