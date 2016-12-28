@@ -23,7 +23,7 @@ class LAO(ShowBase):
         self.scene.setPos(-8, 42, 0)
 
         # Add the spinCameraTask procedure to the task manager.
-        self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
+        self.taskMgr.add(self.gravity, "spinCameraTask")
 
         self.taskMgr.add(self.gravity, "gravity")
 

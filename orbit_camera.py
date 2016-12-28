@@ -24,11 +24,11 @@ class OrbitCamera():
 
     def move_camera_task(self, task):
         diff_x = base.mouseWatcherNode.getMouseX() - self.click_pos_x
-        angle_x = diff_x * (pi / 180.0)
         diff_y = base.mouseWatcherNode.getMouseY() - self.click_pos_y
-        angle_y =  diff_y * (pi / 180.0)
+
         self.sensitivity = 2
         self.zoom = 20.0
+
         self.parent.camera.setPos(
             self.target.getX() + self.zoom * sin(diff_x),
             self.target.getY() + self.zoom * cos(diff_x),
