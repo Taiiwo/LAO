@@ -34,7 +34,11 @@ class OrbitCamera():
             self.target.getY() + self.zoom * cos(diff_x),
             self.target.getZ() - self.zoom * sin(diff_y)
         )
-        self.parent.camera.setHpr(180 - diff_x * 58, diff_y * 58, 0)
+        self.parent.camera.lookAt(
+            self.target.getX(),
+            self.target.getY(),
+            self.target.getZ()
+        )
         return Task.cont
 
     def stop_camera(self):
