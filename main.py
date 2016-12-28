@@ -8,7 +8,7 @@ from panda3d.core import Point3
 from panda3d.core import PerspectiveLens
 from panda3d.core import Light, Spotlight
 
-import fly_camera
+import fly_camera, orbit_camera
 import planet_generator
 
 class LAO(ShowBase):
@@ -20,11 +20,11 @@ class LAO(ShowBase):
         self.disableMouse()
 
         render.setShaderAuto()
-
-
-
+        # The base seed to use for all random number generation. As long as this
+        # seed is used, all generated universes will be identical.
+        seed = "ayylmao"
         # Load the environment model.
-        self.scene = planet_generator.planet()
+        self.scene = planet_generator.planet(10, seed + "-planet")
         # Reparent the model to render.
         planet = self.render.attachNewNode(self.scene)
         # Apply scale and position transforms on the model.
@@ -41,8 +41,15 @@ class LAO(ShowBase):
         self.slnp.lookAt(0, 0, 0)
         render.setLight(self.slnp)
 
+        # Load in the player model
+        self.player = Actor("models/panda-model",
+                                {"walk": "models/panda-walk4"})
+        self.player.setScale(0.005, 0.005, 0.005)
+        self.player.reparentTo(self.render)
+        self.player.setPos(0,0,55)
+
         # sets the fly camera
-        fly_camera.FlyCamera(self, 1, 2)
+        orbit_camera.OrbitCamera(self, 1, 2, self.player)
 
 app = LAO()
 app.run()
